@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Faculty\FacultiesRepository;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(
+            \App\Repositories\Faculty\FacultiesRepositoryInterface::class,
+            \App\Repositories\Faculty\FacultiesRepository::class
+        );
     }
 
     /**
@@ -23,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Paginator::useBootstrap();
     }
 }
