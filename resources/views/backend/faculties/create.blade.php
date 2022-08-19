@@ -2,7 +2,7 @@
 @section('title', 'Tạo Faculty')
 @section('content-title','Tạo Faculty')
 @section('content')
-{!! Form::open(['method' => 'POST', 'route' => ['faculties.store']]) !!}
+{!! Form::model($faculties, ['method' => 'POST', 'route' => ['faculties.store']]) !!}
 <div class="form-group">
     {!! Form::label('name', 'Faculty Name') !!}
     {!! Form::text('name','', ['class' => 'form-control']) !!}

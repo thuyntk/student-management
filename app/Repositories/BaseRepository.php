@@ -41,6 +41,11 @@ abstract class BaseRepository implements RepositoryInterface
         return $result;
     }
 
+    public function getLatestRecord()
+    {
+        return $this->model->orderByRaw("updated_at DESC, created_at DESC");
+    }
+
     public function create($attributes = [])
     {
         return $this->model->create($attributes);

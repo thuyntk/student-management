@@ -21,8 +21,8 @@ class FacultyController extends Controller
      */
     public function index()
     {
-        $faculties = $this->facultiesRepo->getAll();
-        return view('backend.faculties.index', compact('faculties'))->with('i');
+        $faculties = $this->facultiesRepo->getLatestRecord()->paginate(15);
+        return view('backend.faculties.index', compact('faculties'));
     }
 
     /**
@@ -32,7 +32,8 @@ class FacultyController extends Controller
      */
     public function create()
     {
-        return view('backend.faculties.create');
+        $faculties = new Faculty();
+        return view('backend.faculties.create', compact('faculties'));
     }
 
     /**
@@ -43,7 +44,6 @@ class FacultyController extends Controller
      */
     public function store(FacultyRequest $request)
     {
-
         $this->facultiesRepo->create($request->all());
         return redirect()->route('faculties.index')->with(['flash_message' => 'Create successfully!']);
     }

@@ -1,11 +1,11 @@
 @extends('layout.master')
-@section('title',  'Sửa Faculty')
-@section('content-title', 'Sửa Faculty')
+@section('title', 'Sửa Subject')
+@section('content-title','Sửa Subject')
 @section('content')
-{!! Form::model($faculties, ['method' => 'PUT', 'route' => ['faculties.update', $faculties->id]])!!}
+{!! Form::model($subjects, ['method' => 'PUT', 'route' => ['subjects.update', $subjects->id]]) !!}
 <div class="form-group">
-    {!! Form::label('name', 'Faculty Name') !!}
-    {!! Form::text('name',$faculties->name, ['class' => 'form-control']) !!}
+    {!! Form::label('name', 'Subject Name') !!}
+    {!! Form::text('name',$subjects->name, ['class' => 'form-control']) !!}
     @if ($errors->any())
         <ul>
             @foreach($errors->all() as $error)

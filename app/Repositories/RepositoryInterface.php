@@ -18,6 +18,8 @@ interface RepositoryInterface
      */
     public function find($id);
 
+    public function getLatestRecord();
+
     /**
      * Create
      * @param array $attributes
@@ -39,4 +41,5 @@ interface RepositoryInterface
      * @return mixed
      */
     public function delete($id);
+
 }

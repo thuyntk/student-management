@@ -17,9 +17,11 @@ class FacultiesRepository extends BaseRepository implements FacultiesRepositoryI
     {
         return new $this->model;
     }
+    
+    // public function getAll()
+    // {
+    //     return $this->model->paginate(15);
+    // }
+  
 
-    public function getAll()
-    {
-        return $this->model->paginate(15);
-    }
 }

@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class FacultyRequest extends FormRequest
+class SubjectRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,16 +24,17 @@ class FacultyRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=> 'required|unique:faculties|min:6|max:80',
+            'name' => 'required|unique:subjects|min:4|max:80',
         ];
     }
     public function messages()
     {
         return [
-            'name.required' => 'Required to enter faculty name',
-            'name.unique' => 'Faculty name already exists',
-            'name.min' => 'The minimum length of the faculty name is 6 characters',
-            'name.max' => 'The maximum length of the faculty name is 80 characters',
+            'name.required' => 'Required to enter subject name',
+            'name.unique' => 'Subject name already exists',
+            'name.min' => 'The minimum length of the subject name is 6 characters',
+            'name.max' => 'The maximum length of the subject name is 80 characters',
+
         ];
     }
 }
