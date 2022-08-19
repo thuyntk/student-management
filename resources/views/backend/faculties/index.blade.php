@@ -29,6 +29,7 @@
                         <a href="{{route('faculties.edit', $faculty->id)}}"> 
                             <button class="btn btn-primary">Edit</button>
                         </a>
+                      
                         <form action="{{route('faculties.destroy', $faculty->id)}}" method="POST">
                             @csrf
                             @method('DELETE')
@@ -42,4 +43,5 @@
     <div>
         {{$faculties->links()}}
     </div>
+   
 @endsection

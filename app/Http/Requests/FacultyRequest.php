@@ -25,9 +25,15 @@ class FacultyRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=> ['required',
-            Rule::unique('faculties')->ignore($this->faculty),
-            ],
+            'name'=> 'required|unique:faculties|min:6',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'name.required' => 'Required to enter faculty name',
+            'name.unique' => 'Faculty name already exists',
+            'name.min' => 'The minimum length of the faculty name is 6 characters',
         ];
     }
 }

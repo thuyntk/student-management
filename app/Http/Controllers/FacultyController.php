@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FacultyRequest;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
 use App\Repositories\Faculty\FacultiesRepository;
@@ -21,7 +22,7 @@ class FacultyController extends Controller
     public function index()
     {
         $faculties = $this->facultiesRepo->getAll();
-        return view('backend.faculty.index', compact('faculties'))->with('i');
+        return view('backend.faculties.index', compact('faculties'))->with('i');
     }
 
     /**
@@ -31,7 +32,7 @@ class FacultyController extends Controller
      */
     public function create()
     {
-        return view('backend.faculty.create');
+        return view('backend.faculties.create');
     }
 
     /**
@@ -40,8 +41,9 @@ class FacultyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FacultyRequest $request)
     {
+
         $this->facultiesRepo->create($request->all());
         return redirect()->route('faculties.index')->with(['flash_message' => 'Create successfully!']);
     }
@@ -66,7 +68,7 @@ class FacultyController extends Controller
     public function edit($id)
     {
         $faculties = $this -> facultiesRepo->find($id);
-        return view('backend.faculty.edit',compact('faculties'));
+        return view('backend.faculties.edit',compact('faculties'));
     }
 
     /**
@@ -76,7 +78,7 @@ class FacultyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(FacultyRequest $request, $id)
     {
         $faculties = $this ->facultiesRepo->find($id);
         $faculties->update($request->all());
@@ -91,7 +93,7 @@ class FacultyController extends Controller
      */
     public function destroy($id)
     {
-        $faculties =$this ->facultiesRepo->find($id);
+        $faculties =$this->facultiesRepo->find($id);
         $faculties->delete();
         return redirect()->route('faculties.index')->with(['flash_message' => 'Delete successfully!']);
     }
