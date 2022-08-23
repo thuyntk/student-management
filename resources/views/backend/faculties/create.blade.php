@@ -1,21 +1,18 @@
 @extends('layout.master')
-@section('title', 'Tạo Faculty')
-@section('content-title','Tạo Faculty')
+@section('title', $faculty->id ? 'Edit Faculty' : 'Create Faculty')
+@section('content-title', $faculty->id ? 'Edit Faculty' : 'Create Faculty')
 @section('content')
-{!! Form::model($faculties, ['method' => 'POST', 'route' => ['faculties.store']]) !!}
+@if ($faculty->id)
+{!! Form::model($faculty, ['method' => 'PUT', 'route' => ['faculties.update', $faculty]])!!}
+@else
+{!! Form::model($faculty, ['method' => 'POST', 'route' => ['faculties.store']]) !!}
+@endif
 <div class="form-group">
     {!! Form::label('name', 'Faculty Name') !!}
-    {!! Form::text('name','', ['class' => 'form-control']) !!}
-    @if ($errors->any())
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{$error}}</li>
-            @endforeach
-        </ul>
-    @endif
+    {!! Form::text('name', $faculty->name, ['class' => 'form-control']) !!}
 </div>
 <div>
-    {!! Form::submit('Create', ['class' => 'btn btn-primary']) !!}
+    {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
     {!! Form::reset('Reset', ['class' => 'btn btn-warning']) !!}
 </div>
 {!! Form::close() !!}

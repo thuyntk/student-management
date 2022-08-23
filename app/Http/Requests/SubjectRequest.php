@@ -23,18 +23,14 @@ class SubjectRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required|unique:subjects|min:4|max:80',
-        ];
-    }
-    public function messages()
-    {
-        return [
-            'name.required' => 'Required to enter subject name',
-            'name.unique' => 'Subject name already exists',
-            'name.min' => 'The minimum length of the subject name is 6 characters',
-            'name.max' => 'The maximum length of the subject name is 80 characters',
+        if ($this->route('faculty')) {
+            return [
+                'name'=> 'required|min:6|max:80|unique:faculties,name,' . $this->route('faculty'),
+            ];
+        }
 
+        return [
+            'name'=> 'required|unique:faculties|min:6|max:80',
         ];
     }
 }

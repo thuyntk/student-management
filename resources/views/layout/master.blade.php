@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="{{asset('plugins/daterangepicker/daterangepicker.css')}}">
   <!-- summernote -->
   <link rel="stylesheet" href="{{asset('plugins/summernote/summernote-bs4.min.css')}}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -134,14 +135,21 @@
           <li class="nav-item menu-open">
             <a href="{{route('faculties.index')}}" class="nav-link active">
               <p>
-                Faculty
+                List Faculty
               </p>
             </a>
           </li>
           <li class="nav-item menu-open">
             <a href="{{route('subjects.index')}}" class="nav-link active">
               <p>
-                Subject
+                List Subject
+              </p>
+            </a>
+          </li>
+          <li class="nav-item menu-open">
+            {{-- <a href="{{route('students.index')}}" class="nav-link active"> --}}
+              <p>
+                List Student
               </p>
             </a>
           </li>
@@ -175,6 +183,22 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+          @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show">
+                <ul style="list-style: none">
+                    @foreach($errors->all() as $error)
+                        <li>{{$error}}</li>
+                    @endforeach
+                </ul>
+              </div>
+          @endif
+
+          @if (Session::has('flash_message'))
+            <div class="alert alert-success alert-dismissible fade show">
+              {!! Session::get('flash_message') !!}
+            </div>
+          @endif
+      
         @yield('content')
       </div><!-- /.container-fluid -->
     </section>
@@ -227,8 +251,6 @@
 <script src="{{asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{asset('dist/js/adminlte.js')}}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{{asset('dist/js/demo.js')}}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{asset('dist/js/pages/dashboard.js')}}"></script>
 

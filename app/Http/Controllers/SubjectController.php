@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SubjectRequest;
 use App\Models\Subject;
-use App\Repositories\Subject\SubjectsRepository;
+use App\Repositories\Subjects\SubjectRepository;
 use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
     protected $subjectsRepo;
-    public function __construct(SubjectsRepository $subjectsRepo)
+    public function __construct(SubjectRepository $subjectsRepo)
     {
         $this->subjectsRepo = $subjectsRepo;
     }
@@ -32,8 +32,8 @@ class SubjectController extends Controller
      */
     public function create()
     {
-        $subjects = new Subject();
-        return view('backend.subjects.create', compact('subjects'));
+        $subject = $this->subjectsRepo->newModel();
+        return view('backend.subjects.create', compact('subject'));
     }
 
     /**
@@ -68,8 +68,8 @@ class SubjectController extends Controller
      */
     public function edit($id)
     {
-        $subjects = $this->subjectsRepo->find($id);
-        return view('backend.subjects.edit', compact('subjects'));
+        $subject = $this->subjectsRepo->find($id);
+        return view('backend.subjects.create', compact('subject'));
     }
 
     /**
@@ -81,8 +81,9 @@ class SubjectController extends Controller
      */
     public function update(SubjectRequest $request, $id)
     {
-        $subjects = $this->subjectsRepo->find($id);
-        $subjects->update($request->all());
+        $subject = $this->subjectsRepo->find($id);
+        $subject->update($request->all());
+
         return redirect()->route('subjects.index')->with(['flash_message' => 'Update successfully!']);
     }
 
@@ -94,8 +95,8 @@ class SubjectController extends Controller
      */
     public function destroy($id)
     {
-        $subjects = $this->subjectsRepo->find($id);
-        $subjects->delete();
+        $subject = $this->subjectsRepo->find($id);
+        $subject->delete();
         return redirect()->route('subjects.index')->with(['flash_message' => 'Delete successfully!']);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Repositories\Faculty\FacultiesRepository;
+use App\Repositories\Faculties\FacultyRepository;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,10 +16,12 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(
-            \App\Repositories\Faculty\FacultiesRepositoryInterface::class,
-            \App\Repositories\Faculty\FacultiesRepository::class,
-            \App\Repositories\Subjects\SubjectsRepositoryInterface::class,
-            \App\Repositories\Subjects\SubjectsRepository::class,
+            \App\Repositories\Faculties\FacultyRepositoryInterface::class,
+            \App\Repositories\Faculties\FacultyRepository::class,
+            \App\Repositories\Subjects\SubjectRepositoryInterface::class,
+            \App\Repositories\Subjects\SubjectRepository::class,
+            \App\Repositories\Students\StudentRepositoryTnterface::class,
+            \App\Repositories\Students\StudentRepository::class,
         );
     }
 

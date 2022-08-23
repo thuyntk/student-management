@@ -1,41 +1,19 @@
 @extends('layout.master')
-@section('title',  isset($subject) ? 'Update Subject' : 'Create Subject')
-@section('content-title', isset($subjects) ? 'Sửa Subject' :'Tạo Subject')
+@section('title',  $subjects->id ? 'Edit Subject' : 'Create Subject')
+@section('content-title', $subjects->id ? 'Edit Subject' :'Create Subject')
 @section('content')
-{!! Form::model($subjects, ['method' => 'POST', 'route' => ['subjects.store']]) !!}
+@if ($subjects->id)
+    {!! Form::model($subjects, ['method' => 'PUT', 'route' => ['subjects.update', $subjects->id]]) !!}
+@else
+    {!! Form::model($subjects, ['method' => 'POST', 'route' => ['subjects.store']]) !!}
+@endif
 <div class="form-group">
     {!! Form::label('name', 'Subject Name') !!}
-    {!! Form::text('name','', ['class' => 'form-control']) !!}
-    @if ($errors->any())
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{$error}}</li>
-            @endforeach
-        </ul>
-    @endif
+    {!! Form::text('name',$subjects->name , ['class' => 'form-control']) !!}
 </div>
 <div>
-    {!! Form::submit('Create', ['class' => 'btn btn-primary']) !!}
+    {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
     {!! Form::reset('Reset', ['class' => 'btn btn-warning']) !!}
 </div>
 {!! Form::close() !!}
-
-
-{{-- {!! Form::model($subjects, ['method' => 'PUT', 'route' => ['subjects.update', $subjects->id]]) !!}
-<div class="form-group">
-    {!! Form::label('name', 'Subject Name') !!}
-    {!! Form::text('name',$subjects->name, ['class' => 'form-control']) !!}
-    @if ($errors->any())
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{$error}}</li>
-            @endforeach
-        </ul>
-    @endif
-</div>
-<div>
-    {!! Form::submit('Update', ['class' => 'btn btn-primary']) !!}
-    {!! Form::reset('Reset', ['class' => 'btn btn-warning']) !!}
-</div>
-{!! Form::close() !!} --}}
 @endsection

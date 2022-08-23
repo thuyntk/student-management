@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FacultyController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,5 +23,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 
-Route::resource('faculties', FacultyController::class);
-Route::resource('subjects', SubjectController::class);
+Route::resource([
+    'faculties' => FacultyController::class,
+    'subjects' => SubjectController::class,
+    'students' => StudentController::class,
+]);

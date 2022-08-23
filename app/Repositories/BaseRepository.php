@@ -74,5 +74,8 @@ abstract class BaseRepository implements RepositoryInterface
         return false;
     }
 
-
+    public function newModel()
+    {
+        return $this->model;
+    }
 }
