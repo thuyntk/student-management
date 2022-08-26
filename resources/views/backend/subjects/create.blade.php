@@ -1,15 +1,16 @@
-@extends('layout.master')
-@section('title',  $subjects->id ? 'Edit Subject' : 'Create Subject')
-@section('content-title', $subjects->id ? 'Edit Subject' :'Create Subject')
+@extends('layouts.app')
+@extends('layouts.sidebar')
+@section('title',  $subject->id ? 'Edit Subject' : 'Create Subject')
+@section('content-title', $subject->id ? 'Edit Subject' :'Create Subject')
 @section('content')
-@if ($subjects->id)
-    {!! Form::model($subjects, ['method' => 'PUT', 'route' => ['subjects.update', $subjects->id]]) !!}
+@if ($subject->id)
+    {!! Form::model($subject, ['method' => 'PUT', 'route' => ['subjects.update', $subject->id]]) !!}
 @else
-    {!! Form::model($subjects, ['method' => 'POST', 'route' => ['subjects.store']]) !!}
+    {!! Form::model($subject, ['method' => 'POST', 'route' => ['subjects.store']]) !!}
 @endif
 <div class="form-group">
     {!! Form::label('name', 'Subject Name') !!}
-    {!! Form::text('name',$subjects->name , ['class' => 'form-control']) !!}
+    {!! Form::text('name',$subject->name , ['class' => 'form-control']) !!}
 </div>
 <div>
     {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}

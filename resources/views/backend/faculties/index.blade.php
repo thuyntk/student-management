@@ -1,4 +1,5 @@
-@extends('layout.master')
+@extends('layouts.app')
+@extends('layouts.sidebar')
 @section('title','Manage Faculty')
 @section('content-title','Manage Faculty')
 @section('content')

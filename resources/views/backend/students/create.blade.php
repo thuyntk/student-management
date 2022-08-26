@@ -1,4 +1,5 @@
-@extends('layout.master')
+@extends('layouts.app')
+@extends('layouts.sidebar')
 @section('title', $students->id ? 'Edit Student' :  'Create Student')
 @section('content-title', $students->id ? 'Edit Student' : 'Create Student')
 @section('content')

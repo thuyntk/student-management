@@ -22,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Subjects\SubjectRepository::class,
             \App\Repositories\Students\StudentRepositoryTnterface::class,
             \App\Repositories\Students\StudentRepository::class,
+            \App\Repositories\Users\UserRepository::class,
+            \App\Repositories\Users\UserRepositoryInterface::class,
         );
     }
 
