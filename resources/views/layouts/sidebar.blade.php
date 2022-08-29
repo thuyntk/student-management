@@ -77,10 +77,9 @@
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
+                    @can('update')
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-                       with font-awesome or any other icon font library -->
                         <li class="nav-item menu-open">
                             <a href="{{ route('home') }}" class="nav-link active">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -104,13 +103,42 @@
                             </a>
                         </li>
                         <li class="nav-item menu-open">
-                            {{-- <a href="{{route('students.index')}}" class="nav-link active"> --}}
+                            <a href="{{route('students.index')}}" class="nav-link active">
                             <p>
                                 List Student
                             </p>
                             </a>
                         </li>
-                    </ul>
+                    </ul> 
+                    @else
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                    data-accordion="false">
+                    <!-- Add icons to the links using the .nav-icon class
+                   with font-awesome or any other icon font library -->
+                   <li class="nav-item menu-open">
+                        <a href="{{ route('personal') }}" class="nav-link active">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>
+                                    Personal
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item menu-open">
+                        <a href="{{ route('faculties.index') }}" class="nav-link active">
+                            <p>
+                                List Faculty
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item menu-open">
+                        <a href="{{ route('subjects.index') }}" class="nav-link active">
+                            <p>
+                                List Subject
+                            </p>
+                        </a>
+                    </li>
+                </ul> 
+                @endcan
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>

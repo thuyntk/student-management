@@ -7,7 +7,7 @@
     <a href="{{route('students.create')}}" class="btn btn-success">Create New</a>
 </div>
 <br>
-    <table class="table">
+    <table class="table table-bordered table-hover">
         <thead>
             <tr>
                 <td>ID</td>
@@ -28,7 +28,7 @@
                     <td>{{$student->name}}</td>
                     <td>{{$student->email}}</td>
                     <td>{{$student->phone}}</td>
-                    <td>{{<img src="{{asset($student->avatar)}}" alt="" width="100">}}</td>
+                    <td><img src="{{$student->avatar}}" alt="" width="100px"></td>
                     <td>{{$student->gender}}</td>
                     <td>{{$student->address}}</td>
                     <td>{{$student->birthday}}</td>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Student;
+namespace App\Repositories\Students;
 
 use App\Models\Student;
 use App\Repositories\BaseRepository;

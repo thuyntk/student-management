@@ -22,18 +22,16 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
 Route::group(['middleware' => ['auth', 'permission:list']], function() {
+    Route::get('personal', [DashboardController::class, 'index'])->name('personal');
     Route::get('faculties', [FacultyController::class, 'index'])->name('faculties.index'); 
     Route::get('subjects', [SubjectController::class, 'index'])->name('subjects.index'); 
-    Route::get('students', [StudentController::class, 'index'])->name('students.index'); 
 });
 
 Route::group(['middleware' => ['auth', 'permission:create|update|delete']], function() {
+    Route::resource('students', StudentController::class); 
     Route::resource('faculties', FacultyController::class)->except('index'); 
     Route::resource('subjects', SubjectController::class)->except('index'); 
-    Route::resource('students', StudentController::class)->except('index'); 
 }); 
 
 Auth::routes();

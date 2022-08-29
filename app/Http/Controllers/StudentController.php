@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StudentRequest;
 use App\Models\Student;
-use App\Repositories\Student\StudentRepository;
+use App\Repositories\Students\StudentRepository;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -21,7 +22,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $studentsRepo = $this->studentsRepo->getLatestRecord()->paginate(20);
+        $students = $this->studentsRepo->getLatestRecord()->paginate(20);
         return view('backend.students.index', compact('students'));
     }
 
@@ -32,8 +33,8 @@ class StudentController extends Controller
      */
     public function create()
     {
-        $students = new Student();
-        return view('backend.students.create', compact('students'));
+        $student = new Student();
+        return view('backend.students.create', compact('student'));
     }
 
     /**
@@ -42,7 +43,7 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StudentRequest $request)
     {
         $this->studentsRepo->create($request->all());
         return redirect()->route('students.index')->with(['flash_message' => 'Create successfully!']);
@@ -67,7 +68,8 @@ class StudentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $student = $this->studentsRepo->find($id);
+        return view('backend.students.create', compact('student'));
     }
 
     /**
@@ -77,10 +79,12 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StudentRequest $request, $id)
     {
-        //
-    }
+        $student = $this->studentsRepo->find($id);
+        $student->update($request->all());
+
+        return redirect()->route('students.index')->with(['flash_message' => 'Update successfully!']);    }
 
     /**
      * Remove the specified resource from storage.

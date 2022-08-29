@@ -4,7 +4,9 @@
 @section('content-title','Manage Faculty')
 @section('content')
 <div>
-    <a href="{{ route('faculties.create') }}" class="btn btn-success">Create New</a>
+    @can('update')
+        <a href="{{ route('faculties.create') }}" class="btn btn-success">Create New</a>
+    @endcan
 </div>
 <br>
     <table class="table table-bordered table-hover">
@@ -12,7 +14,9 @@
             <tr>
                 <td>ID</td>
                 <td>Name</td>
+                @can('update')
                 <td>Act</td>
+                @endcan
             </tr>
         </thead>
         <tbody>
@@ -20,6 +24,7 @@
                 <tr>
                     <td>{{ $faculty->id }}</td>
                     <td>{{ $faculty->name }}</td>
+                    @can('update')
                     <td>
                         <a href="{{ route('faculties.edit', $faculty->id) }}"> 
                             <button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
@@ -31,6 +36,7 @@
                             <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
                         </form>
                     </td>
+                    @endcan
                 </tr>    
             @endforeach
         </tbody>
