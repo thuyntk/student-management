@@ -4,9 +4,9 @@
 @section('content-title', $student->id ? 'Edit Student' : 'Create Student')
 @section('content')
 @if ( $student->id)
-{!! Form::model($student, ['method' => 'PUT', 'route' => ['students.update', $student->id]])!!}
+{!! Form::model($student, ['method' => 'PUT', 'route' => ['students.update', $student->id], 'enctype' => 'multipart/form-data'])!!}
 @else
-{!! Form::model($student, ['method' => 'POST', 'route' => ['students.store']]) !!}
+{!! Form::model($student, ['method' => 'POST', 'route' => ['students.store'], 'enctype' => 'multipart/form-data']) !!}
 @endif
 <div class="form-group">
     {!! Form::label('name', 'Student Name') !!}
@@ -15,7 +15,11 @@
 
 <div class="form-group">
     {!! Form::label('email', 'Email') !!}
-    {!! Form::email('email', $student->email), ['class' => 'form-control'] !!}
+    @if ($student->id)
+    {!! Form::email('email', $student->email, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+    @else
+    {!! Form::email('email', $student->email, ['class' => 'form-control']) !!}
+    @endif
 </div>
 
 <div class="form-group">
@@ -25,12 +29,23 @@
 
 <div class="form-group">
     {!! Form::label('avata', 'Avatar') !!}
- 
+    {!! Form::file('avatar',['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group">
     {!! Form::label('gender', 'Gender') !!}
-    {!! Form::text('gender', $student->gender, ['class' => 'form-control']) !!}
+    <div class="form-check">
+        {!! Form::radio('gender', '1', true) !!}
+        <label class="form-check-label" for="exampleRadios1">
+            Nam
+        </label>
+    </div>
+    <div class="form-check">
+        {!! Form::radio('gender', '0', true) !!}
+        <label class="form-check-label" for="exampleRadios2">
+            Nữ
+        </label>
+    </div>
 </div>
 
 <div class="form-group">
@@ -41,6 +56,11 @@
 <div class="form-group">
     {!! Form::label('birthday', 'Birthday') !!}
     {!! Form::text('birthday', $student->birthday, ['class' => 'form-control']) !!}
+</div>
+
+<div class='form-group'>
+    {!! Form::label('faculty', 'Faculty') !!}
+    {!! Form::select('faculty_id', $faculty, null, ['class' => 'form-control', 'placeholder' => 'Choose a faculty.']) !!}
 </div>
 
 <div>

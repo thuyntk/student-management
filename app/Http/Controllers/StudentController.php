@@ -3,16 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StudentRequest;
+use App\Models\Faculty;
 use App\Models\Student;
+use App\Repositories\Faculties\FacultyRepository;
 use App\Repositories\Students\StudentRepository;
+use App\Repositories\Subjects\SubjectRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
     protected $studentsRepo;
-    public function __construct(StudentRepository $studentsRepo)
+    protected $facultiesRepo;
+    protected $subjectsRepo;
+    public function __construct(StudentRepository $studentsRepo, FacultyRepository $facultiesRepo, SubjectRepository $subjectsRepo)
     {
         $this->studentsRepo = $studentsRepo;
+        $this->facultiesRepo = $facultiesRepo;
+        $this->subjectsRepo = $subjectsRepo;
     }
 
     /**
@@ -23,7 +31,8 @@ class StudentController extends Controller
     public function index()
     {
         $students = $this->studentsRepo->getLatestRecord()->paginate(20);
-        return view('backend.students.index', compact('students'));
+        $faculties = $this->facultiesRepo->getAll()->pluck('name', 'id');
+        return view('backend.students.index', compact('students','faculties'));
     }
 
     /**
@@ -33,8 +42,9 @@ class StudentController extends Controller
      */
     public function create()
     {
-        $student = new Student();
-        return view('backend.students.create', compact('student'));
+        $student = $this->studentsRepo->newStudent();
+        $faculty = $this->facultiesRepo->getAll()->pluck('name', 'id');
+        return view('backend.students.create', compact('student','faculty'));
     }
 
     /**
@@ -45,6 +55,13 @@ class StudentController extends Controller
      */
     public function store(StudentRequest $request)
     {
+        if ($request->hasFile('avatar'))
+        {
+           $file = $request->file('avatar');
+           $extention = $file->getClientOriginalExtension();
+           $filename = time().'.'.$extention;
+           $file->move('public/storage/images/students/', $filename);
+        }
         $this->studentsRepo->create($request->all());
         return redirect()->route('students.index')->with(['flash_message' => 'Create successfully!']);
     }
@@ -69,7 +86,8 @@ class StudentController extends Controller
     public function edit($id)
     {
         $student = $this->studentsRepo->find($id);
-        return view('backend.students.create', compact('student'));
+        $faculty = $this->facultiesRepo->getAll()->pluck('name', 'id');
+        return view('backend.students.create', compact('student','faculty'));
     }
 
     /**
@@ -83,7 +101,13 @@ class StudentController extends Controller
     {
         $student = $this->studentsRepo->find($id);
         $student->update($request->all());
-
+        if ($request->hasFile('avatar')) {
+            $destination_path = 'public/images/students/';
+            $avatar = $request->file('avatar');
+            $avatar_name = $avatar->getClientOriginalName();
+            $path = $request->file('avatar')->storeAs($destination_path, $avatar_name);
+            $data['avatar'] = $avatar_name;
+        }
         return redirect()->route('students.index')->with(['flash_message' => 'Update successfully!']);    }
 
     /**

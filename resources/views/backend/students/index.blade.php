@@ -28,8 +28,8 @@
                     <td>{{$student->name}}</td>
                     <td>{{$student->email}}</td>
                     <td>{{$student->phone}}</td>
-                    <td><img src="{{$student->avatar}}" alt="" width="100px"></td>
-                    <td>{{$student->gender}}</td>
+                    <td><img src="{{ asset( $student->avatar )}}" alt="" width="100px"></td>
+                    <td>{{$student->gender == 1 ? 'Nam' : 'Nữ'}}</td>
                     <td>{{$student->address}}</td>
                     <td>{{$student->birthday}}</td>
                     <td>

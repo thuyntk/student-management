@@ -13,7 +13,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
         return Student::class;
     }
 
-    public function newFaculty()
+    public function newStudent()
     {
         return new $this->model;
     }
