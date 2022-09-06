@@ -22,17 +22,19 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-Route::group(['middleware' => ['auth', 'permission:list']], function() {
+Route::group(['middleware' => ['auth', 'permission:list']], function () {
     Route::get('personal', [DashboardController::class, 'index'])->name('personal');
-    Route::get('faculties', [FacultyController::class, 'index'])->name('faculties.index'); 
-    Route::get('subjects', [SubjectController::class, 'index'])->name('subjects.index'); 
+    Route::get('faculties', [FacultyController::class, 'index'])->name('faculties.index');
+    Route::get('subjects', [SubjectController::class, 'index'])->name('subjects.index');
 });
 
-Route::group(['middleware' => ['auth', 'permission:create|update|delete']], function() {
+Route::group(['middleware' => ['auth', 'permission:create|update|delete']], function () {
+    Route::get('search', [StudentController::class, 'search'])->name('search');
     Route::resource('students', StudentController::class); 
-    Route::resource('faculties', FacultyController::class)->except('index'); 
-    Route::resource('subjects', SubjectController::class)->except('index'); 
-}); 
+    Route::resource('faculties', FacultyController::class)->except('index');
+    Route::resource('subjects', SubjectController::class)->except('index');
+    Route::get('send-mail', [StudentController::class, 'sendMail'])->name('send-mail');
+});
 
 Auth::routes();
 

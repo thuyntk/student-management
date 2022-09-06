@@ -4,6 +4,7 @@ namespace App\Repositories\Students;
 
 use App\Models\Student;
 use App\Repositories\BaseRepository;
+use Carbon\Carbon;
 
 class StudentRepository extends BaseRepository implements StudentRepositoryInterface
 {
@@ -16,6 +17,19 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
     public function newStudent()
     {
         return new $this->model;
+    }
+    public function search($data)
+    {
+        $student = $this->model->newQuery();
+
+        if(isset($data['age_from'])) {
+            $student->whereYear('birthday', '<=', Carbon::now()->subYear($data['age_from'])->format('Y'));
+        }
+
+        if(isset($data['age_to'])) {
+            $student->whereYear('birthday', '>=', Carbon::now()->subYear($data['age_to'])->format('Y'));
+        }
+        return $student->paginate(10);
     }
 
 }

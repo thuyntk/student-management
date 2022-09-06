@@ -23,8 +23,21 @@ class StudentRequest extends FormRequest
      */
     public function rules()
     {
+        if ($this->route('faculty')) {
+            return [
+                'name' => 'required|min:6|max:80|unique:students,name,' . $this->route('student'),
+                'email' => 'required|email|unique:users,email',
+                'phone' => 'required|min:10|max:15,' . $this->route('student'),
+                'avatar' => 'required',
+                'address' => 'required',
+                'birthday' => 'required',
+                'gender' => 'required',
+                'faculty_id' => 'required',
+            ];
+        }
+
         return [
-            'name' => 'required|min:4|max:80',
+            'name' => 'required|min:6|max:80|unique:students,name',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|min:10|max:15',
             'avatar' => 'required',

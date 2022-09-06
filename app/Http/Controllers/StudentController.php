@@ -9,7 +9,6 @@ use App\Repositories\Faculties\FacultyRepository;
 use App\Repositories\Students\StudentRepository;
 use App\Repositories\Subjects\SubjectRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
@@ -29,10 +28,16 @@ class StudentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
+    {        
+        $students = $this->studentsRepo->getLatestRecord()->paginate(15);
+        return view('backend.students.index', compact('students'));
+    }
+
+    public function search(Request $request)
     {
-        $students = $this->studentsRepo->getLatestRecord()->paginate(20);
-        $faculties = $this->facultiesRepo->getAll()->pluck('name', 'id');
-        return view('backend.students.index', compact('students','faculties'));
+        $students = $this->studentsRepo->search($request->all());
+
+        return view('backend.students.index', compact('students'))->with('i');
     }
 
     /**
@@ -44,7 +49,7 @@ class StudentController extends Controller
     {
         $student = $this->studentsRepo->newStudent();
         $faculty = $this->facultiesRepo->getAll()->pluck('name', 'id');
-        return view('backend.students.create', compact('student','faculty'));
+        return view('backend.students.create', compact('student', 'faculty'));
     }
 
     /**
@@ -55,14 +60,16 @@ class StudentController extends Controller
      */
     public function store(StudentRequest $request)
     {
-        if ($request->hasFile('avatar'))
-        {
-           $file = $request->file('avatar');
-           $extention = $file->getClientOriginalExtension();
-           $filename = time().'.'.$extention;
-           $file->move('public/storage/images/students/', $filename);
+        $data = $request->all();
+
+        if ($request->hasFile('avatar')) {
+            $file = $request->avatar;
+            $fileHashName = $file->hashName();
+            $filename = $request->name . '-' . $fileHashName;
+            $data['avatar'] = $file->move('images/students', $filename);
         }
-        $this->studentsRepo->create($request->all());
+
+        $this->studentsRepo->create($data);
         return redirect()->route('students.index')->with(['flash_message' => 'Create successfully!']);
     }
 
@@ -87,7 +94,7 @@ class StudentController extends Controller
     {
         $student = $this->studentsRepo->find($id);
         $faculty = $this->facultiesRepo->getAll()->pluck('name', 'id');
-        return view('backend.students.create', compact('student','faculty'));
+        return view('backend.students.create', compact('student', 'faculty'));
     }
 
     /**
@@ -99,16 +106,19 @@ class StudentController extends Controller
      */
     public function update(StudentRequest $request, $id)
     {
-        $student = $this->studentsRepo->find($id);
-        $student->update($request->all());
+        $data = $this->studentsRepo->find($id);
+        $data = $request->all();
+
         if ($request->hasFile('avatar')) {
-            $destination_path = 'public/images/students/';
-            $avatar = $request->file('avatar');
-            $avatar_name = $avatar->getClientOriginalName();
-            $path = $request->file('avatar')->storeAs($destination_path, $avatar_name);
-            $data['avatar'] = $avatar_name;
+            $file = $request->avatar;
+            $fileHashName = $file->hashName();
+            $filename = $request->name . '-' . $fileHashName;
+            $data['avatar'] = $file->move('images/students', $filename);
         }
-        return redirect()->route('students.index')->with(['flash_message' => 'Update successfully!']);    }
+
+        $this->studentsRepo->update($id, $data);
+        return redirect()->route('students.index')->with(['flash_message' => 'Update successfully!']);
+    }
 
     /**
      * Remove the specified resource from storage.
