@@ -3,23 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StudentRequest;
+use App\Mail\SendMail;
 use App\Models\Faculty;
 use App\Models\Student;
+use App\Models\User;
 use App\Repositories\Faculties\FacultyRepository;
 use App\Repositories\Students\StudentRepository;
 use App\Repositories\Subjects\SubjectRepository;
+use App\Repositories\Users\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Spatie\Permission\Models\Role;
 
 class StudentController extends Controller
 {
     protected $studentsRepo;
     protected $facultiesRepo;
     protected $subjectsRepo;
-    public function __construct(StudentRepository $studentsRepo, FacultyRepository $facultiesRepo, SubjectRepository $subjectsRepo)
+    protected $usersRepo;
+    public function __construct(StudentRepository $studentsRepo, FacultyRepository $facultiesRepo, SubjectRepository $subjectsRepo, UserRepository $usersRepo)
     {
         $this->studentsRepo = $studentsRepo;
         $this->facultiesRepo = $facultiesRepo;
         $this->subjectsRepo = $subjectsRepo;
+        $this->usersRepo = $usersRepo;
     }
 
     /**
@@ -61,15 +69,21 @@ class StudentController extends Controller
     public function store(StudentRequest $request)
     {
         $data = $request->all();
-
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+        $user->assignRole('student');
         if ($request->hasFile('avatar')) {
             $file = $request->avatar;
             $fileHashName = $file->hashName();
             $filename = $request->name . '-' . $fileHashName;
             $data['avatar'] = $file->move('images/students', $filename);
         }
-
         $this->studentsRepo->create($data);
+        $mail = new SendMail($user);
+        Mail::to($request->email)->send($mail);
         return redirect()->route('students.index')->with(['flash_message' => 'Create successfully!']);
     }
 

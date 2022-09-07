@@ -4,17 +4,9 @@
 @section('content-title', $student->id ? 'Edit Student' : 'Create Student')
 @section('content')
     @if ($student->id)
-        {!! Form::model($student, [
-            'method' => 'PUT',
-            'route' => ['students.update', $student->id],
-            'enctype' => 'multipart/form-data',
-        ]) !!}
+        {!! Form::model($student, ['method' => 'PUT', 'route' => ['students.update', $student->id], 'enctype' => 'multipart/form-data', ]) !!}
     @else
-        {!! Form::model($student, [
-            'method' => 'POST',
-            'route' => ['students.store'],
-            'enctype' => 'multipart/form-data',
-        ]) !!}
+        {!! Form::model($student, ['method' => 'POST', 'route' => ['students.store'], 'enctype' => 'multipart/form-data',]) !!}
     @endif
     <div class="form-group">
         {!! Form::label('name', 'Student Name') !!}
@@ -69,6 +61,10 @@
             'placeholder' => 'Choose a faculty.',
         ]) !!}
     </div>
+
+   <div>
+        {!! Form::hidden('password', '1') !!}
+   </div>
 
     <div>
         {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
