@@ -9,6 +9,7 @@
     <br>
     <div class="search">
         <form action="{{ route('search') }}" method="get" style="display: inline">
+            @csrf
             <br>
             <div class="container">
                 <div class="row">
@@ -51,7 +52,9 @@
                 <td>Gender</td>
                 <td>Address</td>
                 <td>Birthday</td>
-                <td>Hành động</td>
+                <td>Number of regSub</td>
+                <td></td>
+                <td>Act</td>
             </tr>
         </thead>
         <tbody>
@@ -65,6 +68,7 @@
                     <td>{{ $student->gender == 1 ? 'Nam' : 'Nữ' }}</td>
                     <td>{{ $student->address }}</td>
                     <td>{{ $student->birthday }}</td>
+                    <td></td>
                     <td>
                         <a href="{{ route('students.edit', $student->id) }}">
                             <button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>

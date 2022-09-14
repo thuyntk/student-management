@@ -18,6 +18,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
     {
         return new $this->model;
     }
+
     public function search($data)
     {
         $student = $this->model->newQuery();
@@ -30,6 +31,11 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
             $student->whereYear('birthday', '>=', Carbon::now()->subYear($data['age_to'])->format('Y'));
         }
         return $student->paginate(10);
+    }
+
+    public function whereByUserId($id)
+    {
+        return $this->model->where('user_id',$id)->first();
     }
 
 }

@@ -21,7 +21,7 @@ class FacultyController extends Controller
      */
     public function index()
     {
-        $faculties = $this->facultiesRepo->getLatestRecord()->paginate(15);
+        $faculties = $this->facultiesRepo->getLatestRecord();
 
         return view('backend.faculties.index', compact('faculties'));
     }

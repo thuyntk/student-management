@@ -31,6 +31,6 @@ class SendMail extends Mailable
     public function build()
     {
         $user = $this->user;
-        return $this->view('email.sendmail')->with(['user' => $this->user,]);;
+        return $this->view('email.sendmail', compact('user'));
     }
 }

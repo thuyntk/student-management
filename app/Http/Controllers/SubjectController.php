@@ -3,16 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SubjectRequest;
+use App\Models\Student;
 use App\Models\Subject;
+use App\Repositories\Students\StudentRepository;
 use App\Repositories\Subjects\SubjectRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Mockery\Matcher\Subset;
 
 class SubjectController extends Controller
 {
     protected $subjectsRepo;
-    public function __construct(SubjectRepository $subjectsRepo)
+    protected $studentsRepo;
+    public function __construct(SubjectRepository $subjectsRepo, StudentRepository $studentsRepo)
     {
         $this->subjectsRepo = $subjectsRepo;
+        $this->studentsRepo = $studentsRepo;
     }
     /**
      * Display a listing of the resource.
@@ -21,8 +28,22 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        $subjects = $this->subjectsRepo->getLatestRecord()->paginate(15);
-        return view('backend.subjects.index', compact('subjects'));
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->hasRole('student')) {
+
+                $student = Student::where('user_id', $user->id)->first();
+
+                if ($student) {
+                    $studentSubjects = $student->subjects;
+                }
+            } else {
+                $studentSubjects = '';
+            }
+        }
+        $subjects = $this->subjectsRepo->getLatestRecord();
+
+        return view('backend.subjects.index', compact('subjects', 'studentSubjects'));
     }
 
     /**
@@ -96,7 +117,10 @@ class SubjectController extends Controller
     public function destroy($id)
     {
         $subject = $this->subjectsRepo->find($id);
-        $subject->delete();
+        if ($subject->students()->count('*')) {
+            Session::flash('error', 'Cannot Delete Subjects Successful');
+        }
+        $this->subjectsRepo->delete($id);
         return redirect()->route('subjects.index')->with(['flash_message' => 'Delete successfully!']);
     }
 }

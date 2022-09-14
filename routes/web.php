@@ -28,6 +28,8 @@ Route::group(['middleware' => ['auth', 'permission:list']], function () {
     Route::get('subjects', [SubjectController::class, 'index'])->name('subjects.index');
 });
 
+Route::post('register-subject', [StudentController::class, 'regSubject'])->name('registerSubject');
+
 Route::group(['middleware' => ['auth', 'permission:create|update|delete']], function () {
     Route::get('search', [StudentController::class, 'search'])->name('search');
     Route::resource('students', StudentController::class); 

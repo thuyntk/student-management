@@ -16,7 +16,7 @@
                 <td>Name</td>
                 @can('update')
                     <td>Act</td>
-                @endcan
+                @endcan    
             </tr>
         </thead>
         <tbody>
@@ -29,7 +29,6 @@
                             <a href="{{ route('faculties.edit', $faculty->id) }}">
                                 <button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
                             </a>
-
                             <form action="{{ route('faculties.destroy', $faculty->id) }}" method="POST" style="display:inline"
                                 onsubmit="return confirm('Are you sure delete ?')">
                                 @csrf

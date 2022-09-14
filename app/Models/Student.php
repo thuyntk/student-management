@@ -25,4 +25,8 @@ class Student extends Model
     {
         return $this->belongsTo(Faculty::class, 'faculty_id', 'id');
     }
+
+    public function subjects(){
+        return $this->belongsToMany(Subject::class)->withPivot('point');
+    }
 }

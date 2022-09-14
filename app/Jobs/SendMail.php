@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,10 +20,10 @@ class SendMail implements ShouldQueue
      *
      * @return void
      */
-    protected $mail;
-    public function __construct($mail)
+    protected $user;
+    public function __construct(User $user)
     {
-        $this->mail = $mail;
+        $this->user = $user;
     }
 
     /**
@@ -32,6 +33,6 @@ class SendMail implements ShouldQueue
      */
     public function handle()
     {
-        Mail::send($this->mail);
+        Mail::send($this->user);
     }
 }

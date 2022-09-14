@@ -12,8 +12,10 @@ use App\Repositories\Students\StudentRepository;
 use App\Repositories\Subjects\SubjectRepository;
 use App\Repositories\Users\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 use Spatie\Permission\Models\Role;
 
 class StudentController extends Controller
@@ -36,9 +38,33 @@ class StudentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {        
-        $students = $this->studentsRepo->getLatestRecord()->paginate(15);
+    {       
+        $students = $this->studentsRepo->getLatestRecord();
         return view('backend.students.index', compact('students'));
+    }
+
+    public function regSubject(Request $request)
+    {
+        $data = $request->regSubjects;
+
+        if (Auth::check()) {
+
+            $user = Auth::user();
+            $student = $this->studentsRepo->whereByUserId($user->id);
+
+            if ($data) {
+
+                foreach ($data as $value) {
+                    $student->subjects()->attach($student->id, ['subject_id' => $value]);
+                    Session::flash('success', 'Successfully registered for the course');
+                }
+                return redirect()->back();
+            }
+        }
+
+        Session::flash('error', 'This course is already registered');
+
+        return redirect()->back();
     }
 
     public function search(Request $request)
@@ -146,4 +172,36 @@ class StudentController extends Controller
         $students->delete();
         return redirect()->route('students.index')->with(['flash_message' => 'Delete successfully!']);
     }
+    // public function regSubject($id)
+    // {
+    //     if (Auth::check()) {
+    //         $user = Auth::user();
+    //         $student = Student::where('user_id', $user->id)->first();
+    //         $subject_student = $student->subjects()->get();
+
+    //         foreach ($subject_student  as $value) {
+    //             if ($id == $value->pivot->subject_id) {
+    //                 Session::flash('error', 'This course is already registered');
+
+    //                 return redirect()->back();
+    //             }
+    //         }
+
+    //         $register = $student->subjects()->attach($student->id, ['subject_id' => $id]);
+    //         Session::flash('success', 'Successfully registered for the course');
+
+    //         return redirect()->back();
+    //     }
+    // }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+   
+    // public function update_profile(Request $request, $id)
+    // {
+    //     dd($request);
+    // }
+
 }
