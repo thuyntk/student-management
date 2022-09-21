@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StudentRequest;
 use App\Mail\SendMail;
-use App\Models\Faculty;
 use App\Models\Student;
 use App\Models\User;
 use App\Repositories\Faculties\FacultyRepository;
@@ -16,7 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
-use Spatie\Permission\Models\Role;
 
 class StudentController extends Controller
 {
@@ -40,7 +38,8 @@ class StudentController extends Controller
     public function index()
     {       
         $students = $this->studentsRepo->getLatestRecord();
-        return view('backend.students.index', compact('students'));
+        $subjects = $this->subjectsRepo->count('*');
+        return view('backend.students.index', compact('students', 'subjects'));
     }
 
     public function regSubject(Request $request)
@@ -56,13 +55,11 @@ class StudentController extends Controller
 
                 foreach ($data as $value) {
                     $student->subjects()->attach($student->id, ['subject_id' => $value]);
-                    Session::flash('success', 'Successfully registered for the course');
                 }
                 return redirect()->back();
             }
         }
 
-        Session::flash('error', 'This course is already registered');
 
         return redirect()->back();
     }
@@ -70,8 +67,9 @@ class StudentController extends Controller
     public function search(Request $request)
     {
         $students = $this->studentsRepo->search($request->all());
+        $subjects = $this->subjectsRepo->count('*');
 
-        return view('backend.students.index', compact('students'))->with('i');
+        return view('backend.students.index', compact('students','subjects'))->with('i');
     }
 
     /**
@@ -82,7 +80,8 @@ class StudentController extends Controller
     public function create()
     {
         $student = $this->studentsRepo->newStudent();
-        $faculty = $this->facultiesRepo->getAll()->pluck('name', 'id');
+        $faculty = $this->facultiesRepo->getAll()->pluck('name', 'id'); 
+
         return view('backend.students.create', compact('student', 'faculty'));
     }
 
@@ -110,6 +109,7 @@ class StudentController extends Controller
         $this->studentsRepo->create($data);
         $mail = new SendMail($user);
         Mail::to($request->email)->send($mail);
+
         return redirect()->route('students.index')->with(['flash_message' => 'Create successfully!']);
     }
 
@@ -134,6 +134,7 @@ class StudentController extends Controller
     {
         $student = $this->studentsRepo->find($id);
         $faculty = $this->facultiesRepo->getAll()->pluck('name', 'id');
+
         return view('backend.students.create', compact('student', 'faculty'));
     }
 
@@ -157,6 +158,7 @@ class StudentController extends Controller
         }
 
         $this->studentsRepo->update($id, $data);
+
         return redirect()->route('students.index')->with(['flash_message' => 'Update successfully!']);
     }
 
@@ -170,38 +172,50 @@ class StudentController extends Controller
     {
         $students = $this->studentsRepo->find($id);
         $students->delete();
+
         return redirect()->route('students.index')->with(['flash_message' => 'Delete successfully!']);
     }
-    // public function regSubject($id)
+
+    // public function updatePoint($id, Request $request)
     // {
-    //     if (Auth::check()) {
-    //         $user = Auth::user();
-    //         $student = Student::where('user_id', $user->id)->first();
-    //         $subject_student = $student->subjects()->get();
-
-    //         foreach ($subject_student  as $value) {
-    //             if ($id == $value->pivot->subject_id) {
-    //                 Session::flash('error', 'This course is already registered');
-
-    //                 return redirect()->back();
-    //             }
-    //         }
-
-    //         $register = $student->subjects()->attach($student->id, ['subject_id' => $id]);
-    //         Session::flash('success', 'Successfully registered for the course');
-
-    //         return redirect()->back();
-    //     }
-    // }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-   
-    // public function update_profile(Request $request, $id)
-    // {
-    //     dd($request);
+    //     $student = $this->studentsRepo->find($id);
+    //     $subjects = $student->subjects;
+  
+    //     return view('backend.students.add-point', compact('student', 'subjects'));
     // }
 
+    // public function savePoint(Request $request, $id)
+    // {
+    //     $subject = $this->subjectsRepo->find($id);
+    //     $subject->update($request->all());
+
+    //     return redirect()->route('updatePoint',$subject->id);
+    // }
+
+    public function addPoint($id)
+    {
+        $getSubjects = $this->subjectsRepo->getAll();
+        $findStudentId = $this->studentsRepo->find($id);
+        $getSubjectsById = $findStudentId->subjects;
+
+        return view('backend.students.add-point', compact('getSubjects', 'findStudentId', 'getSubjectsById',));
+    }
+
+    public function savePoint(Request $request, $id)
+    {
+        $data = [];
+        foreach ($request->subject_id as $item => $value) {
+            array_push($data, [
+                'subject_id' => $request->subject_id[$item],
+                'point' => $request->point[$item],
+            ]);
+        }
+        $point = [];
+        foreach ($data as $key => $value) {
+            $point[$value['subject_id']] = ['point' => $value['point']];
+        }
+        $this->studentsRepo->find($id)->subjects()->sync($point);
+
+        return redirect()->route('students.index');
+    }
 }

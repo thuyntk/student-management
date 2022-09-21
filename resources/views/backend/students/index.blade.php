@@ -50,10 +50,14 @@
                 <td>Phone</td>
                 <td>Avatar</td>
                 <td>Gender</td>
-                <td>Address</td>
+                {{-- <td>Address</td> --}}
                 <td>Birthday</td>
+                <td>Faculty</td>
+                <td>Avg point</td>
                 <td>Number of regSub</td>
-                <td></td>
+                <td>Notify</td>
+                <td>List subject</td>
+                <td>Add point</td>
                 <td>Act</td>
             </tr>
         </thead>
@@ -66,26 +70,61 @@
                     <td>{{ $student->phone }}</td>
                     <td><img src="{{ asset($student->avatar) }}" alt="" width="100px"></td>
                     <td>{{ $student->gender == 1 ? 'Nam' : 'Nữ' }}</td>
-                    <td>{{ $student->address }}</td>
+                    {{-- <td>{{ $student->address }}</td> --}}
                     <td>{{ $student->birthday }}</td>
-                    <td></td>
-                    <td>
-                        <a href="{{ route('students.edit', $student->id) }}">
-                            <button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
-                        </a>
-                        <form action="{{ route('students.destroy', $student->id) }}" method="POST" style="display:inline"
-                            onsubmit="return confirm('Are you sure delete ?')">
+                    <td id="data-faculty-{{ $student->id }}">{{ $student->faculty->name }}</td>
+                    @if ($student->subjects->count() != $subjects)
+                        <td>Studying</td>
+                    @else
+                        @for ($i = 0; $i < $subjects; $i++)
+                            @if (!$student->subjects[$i]->pivot->point)
+                                <td>Studying</td>
+                            @break
+
+                        @elseif($i == $subjects - 1)
+                            <td id="data-point-{{ $student->id }}">
+                                {{ round($student->subjects->avg('pivot.point'), 2) }}
+                            </td>
+                        @endif
+                    @endfor
+                @endif
+                <td id="data-subject-{{ $student->id }}">{{ $student->subjects->count() }} / {{ $subjects }}
+                </td>
+                <td>
+                    @if ($student->subjects->count() !== $subjects)
+                        <form action="{{ route('mail', $student->id) }}" method="POST">
                             @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-warning btn-sm" type="submit"><i class="fa fa-envelope"
+                                    style="color: white"></i></button>
                         </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-    <div>
-        {{ $students->appends(Request::all())->links() }}
-    </div>
-    <br>
+                    @endif
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-eye"></i></button>
+                </td>
+                <td>
+                    <a href="{{ route('students.addpoint.index', $student->id) }}">
+                        <button class="btn btn-dark"><i class="fa-solid fa-book-open"></i></button>
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ route('students.edit', $student->id) }}">
+                        <button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
+                    </a>
+                    <form action="{{ route('students.destroy', $student->id) }}" method="POST" style="display:inline"
+                        onsubmit="return confirm('Are you sure delete ?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                     
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+<div>
+    {{ $students->appends(Request::all())->links() }}
+</div>
+<br>
 @endsection
