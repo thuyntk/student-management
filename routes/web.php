@@ -28,20 +28,26 @@ Route::group(['middleware' => ['auth', 'permission:list']], function () {
     Route::get('subjects', [SubjectController::class, 'index'])->name('subjects.index');
 });
 
-Route::post('register-subject', [StudentController::class, 'regSubject'])->name('registerSubject');
 
 Route::group(['middleware' => ['auth', 'permission:create|update|delete']], function () {
     Route::get('search', [StudentController::class, 'search'])->name('search');
     Route::resource('students', StudentController::class); 
     Route::resource('faculties', FacultyController::class)->except('index');
     Route::resource('subjects', SubjectController::class)->except('index');
+    
     Route::get('send-mail', [StudentController::class, 'sendMail'])->name('send-mail');
-    // Route::get('student/{id}/points', [StudentController::class, 'updatePoint'])->name('updatePoint');
-    // Route::post('save-point/{id}', [StudentController::class, 'savePoint'])->name('savePoint');
+   
     Route::get('/students/{id}/points', [StudentController::class, 'addPoint'])->name('students.addpoint.index');
     Route::post('/students/{id}/points', [StudentController::class, 'savePoint'])->name('students.savePoint');
+    
     Route::post('mail/{id}', [SubjectController::class, 'mail'])->name('mail');
+
+
+    Route::get('subjects/export/{id}', [SubjectController::class, 'export'])->name('subjects.export');
+    Route::post('subjects/import/{id}', [SubjectController::class, 'import'])->name('subjects.import');
 });
+Route::post('student/register-subject', [StudentController::class, 'regSubject'])->name('registerSubject');
+
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');

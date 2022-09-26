@@ -9,42 +9,47 @@
         @endcan
     </div>
     <br>
-    <form action="{{ route('registerSubject') }}" method="POST">
-        @csrf
-        <table class="table table-bordered table-hover">
-            <thead>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Name</td>
+                @can('update')
+                    <td>Act</td>
+                    <td>List student</td>
+                @endcan
+                @cannot('update')
+                    <td>Point</td>
+                    <td>Status</td>
+                    <td>Act</td>
+                @endcannot
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($subjects as $subject)
                 <tr>
-                    <td>ID</td>
-                    <td>Name</td>
+                    <td>{{ $subject->id }}</td>
+                    <td>{{ $subject->name }}</td>
                     @can('update')
-                        <td>Act</td>
+                        <td>
+                            <a href="{{ route('subjects.edit', $subject->id) }}">
+                                <button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
+                            </a>
+                            <form action="{{ route('subjects.destroy', $subject->id) }}" method="POST" style="display:inline"
+                                onsubmit="return confirm('Are you sure delete ?')">
+                                @method('DELETE')
+                                @csrf
+                                <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="{{ route('subjects.show', $subject->id) }}">
+                                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-eye"></i></button>
+                            </a>
+                        </td>
                     @endcan
-                    @cannot('update')
-                        <td>Point</td>
-                        <td>Status</td>
-                        <td>Act</td>
-                    @endcannot
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($subjects as $subject)
-                    <tr>
-                        <td>{{ $subject->id }}</td>
-                        <td>{{ $subject->name }}</td>
-                        @can('update')
-                            <td>
-                                <a href="{{ route('subjects.edit', $subject->id) }}">
-                                    <button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
-                                </a>
-
-                                <form action="{{ route('subjects.destroy', $subject->id) }}" method="POST" style="display:inline"
-                                    onsubmit="return confirm('Are you sure delete ?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
-                                </form>
-                            </td>
-                        @endcan
+                    <form action="{{ route('registerSubject') }}" method="POST">
+                        @csrf
                         @cannot('update')
                             @if ($studentSubjects->isEmpty())
                                 <td>Null</td>
@@ -64,27 +69,31 @@
                                             <td><input type="checkbox" name="" id="" checked disabled></td>
                                         @endif
                                     @break
-
-                                @elseif($i == $studentSubjects->count() - 1)
-                                    @if ($subject->id !== $studentSubjects[$i]->id)
-                                        <td>Null</td>
-                                        <td> <span class="text-danger">Haven't studied yet</span></td>
-                                        <td><input type="checkbox" name="regSubjects[]" value="{{ $subject->id }}"></td>
+                                    @elseif($i == $studentSubjects->count() - 1)
+                                        @if ($subject->id !== $studentSubjects[$i]->id)
+                                            <td>Null</td>
+                                            <td> <span class="text-danger">Haven't studied yet</span></td>
+                                            <td><input type="checkbox" name="regSubjects[]" value="{{ $subject->id }}"></td>
+                                        @endif
                                     @endif
-                                @endif
-                            @endfor
-                        @endif
-                    @endcannot
+                                @endfor
+                            @endif
+                        @endcannot
+                    </form>
                 </tr>
+                @cannot('update')
+                    <div>
+                        <button class="btn btn-primary" id="register-all">Register</button>
+                    </div>
+                @endcannot
             @endforeach
         </tbody>
     </table>
-    @cannot('update')
-        <div>
-            <button class="btn btn-primary" id="register-all">Register</button>
-        </div>
-    @endcannot
+<form action="" method="POST" id="form-delete">
+    {{ method_field('DELETE') }}
+    {!! csrf_field() !!}
 </form>
+
 <div>
     {{ $subjects->links() }}
 </div>

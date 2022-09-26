@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StudentsExport;
+use App\Http\Requests\ImportRequest;
 use App\Http\Requests\SubjectRequest;
+use App\Imports\StudentsImport;
 use App\Jobs\SendMailSubject;
 use App\Jobs\SendMailSubjectsJob;
 use App\Mail\SendMailSubject as MailSendMailSubject;
@@ -14,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 use Mockery\Matcher\Subset;
 
 class SubjectController extends Controller
@@ -50,7 +54,11 @@ class SubjectController extends Controller
         return view('backend.subjects.index', compact('subjects', 'studentSubjects'));
     }
 
-    
+    public function show($id)
+    {
+        $subject = $this->subjectsRepo->find($id);
+        return view('backend.subjects.student_subject', compact('subject'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -140,6 +148,28 @@ class SubjectController extends Controller
         }
         $sendMail = new MailSendMailSubject($listSubject);
         Mail::to($student->email)->queue($sendMail);
+        return redirect()->back();
+    }
+
+    public function export($id) 
+    {
+        return Excel::download(new StudentsExport($id), 'StudentsPoin.xlsx');
+    }
+
+    public function import(ImportRequest $request, $id)
+    {
+        $subject = $this->subjectsRepo->relationship(['students'])->find($id);
+        $fileImport = Excel::toCollection(new StudentsImport($id), request()->file('import_file'));
+        foreach ($fileImport[0] as $import) {
+            foreach ($subject->students as $student) {
+                if ($import['id'] == $student['id']) {
+                    $student->pivot->where('student_id', '=', $student['id'])->where('subject_id', $id)->update([
+                        'point' => $import['point'],
+                    ]);
+                }
+            }
+        }
+        Session::flash('success', 'Subject Imported Successfully');
         return redirect()->back();
     }
 }

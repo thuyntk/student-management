@@ -83,4 +83,8 @@ abstract class BaseRepository implements RepositoryInterface
     {
         return $this->model->query();
     }
+    public function relationship($attributes = [])
+    {
+        return $this->model->with($attributes);
+    }
 }

@@ -45,4 +45,6 @@ interface RepositoryInterface
     public function newModel();
     
     public function query();
+
+    public function relationship($attributes = []);
 }

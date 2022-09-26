@@ -5,6 +5,7 @@
 @section('content')
     <div>
         <a href="{{ route('students.create') }}" class="btn btn-success">Create New</a>
+        <a href="" class="btn btn-secondary">Import</a>
     </div>
     <br>
     <div class="search">
@@ -56,7 +57,6 @@
                 <td>Avg point</td>
                 <td>Number of regSub</td>
                 <td>Notify</td>
-                <td>List subject</td>
                 <td>Add point</td>
                 <td>Act</td>
             </tr>
@@ -100,9 +100,6 @@
                     @endif
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-eye"></i></button>
-                </td>
-                <td>
                     <a href="{{ route('students.addpoint.index', $student->id) }}">
                         <button class="btn btn-dark"><i class="fa-solid fa-book-open"></i></button>
                     </a>
@@ -117,7 +114,6 @@
                         @method('DELETE')
                         <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
                     </form>
-                     
                 </td>
             </tr>
         @endforeach

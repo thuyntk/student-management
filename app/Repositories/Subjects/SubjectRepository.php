@@ -24,7 +24,5 @@ class SubjectRepository extends BaseRepository implements SubjectRepositoryInter
     // public function getAll()
     // {
     //     return $this->model->paginate(15);
-    // }
-  
-
+    // } 
 }

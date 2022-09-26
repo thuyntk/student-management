@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @extends('layouts.sidebar')
 @section('title', 'Add point')
-@section('content-title', 'Add point')
 @section('content')
     
 <div class="card">

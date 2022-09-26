@@ -5,6 +5,7 @@ namespace App\Repositories\Students;
 use App\Models\Student;
 use App\Repositories\BaseRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class StudentRepository extends BaseRepository implements StudentRepositoryInterface
 {
@@ -36,6 +37,11 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
     public function whereByUserId($id)
     {
         return $this->model->where('user_id',$id)->first();
+    }
+
+    public function getStudentById()
+    {
+        return $this->model->where('user_id', Auth::id())->first()->id;
     }
 
 }

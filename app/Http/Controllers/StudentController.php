@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StudentsExport;
 use App\Http\Requests\StudentRequest;
+use App\Imports\StudentsImport;
 use App\Mail\SendMail;
 use App\Models\Student;
 use App\Models\User;
@@ -15,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
@@ -47,21 +50,16 @@ class StudentController extends Controller
         $data = $request->regSubjects;
 
         if (Auth::check()) {
-
             $user = Auth::user();
             $student = $this->studentsRepo->whereByUserId($user->id);
 
             if ($data) {
-
                 foreach ($data as $value) {
                     $student->subjects()->attach($student->id, ['subject_id' => $value]);
                 }
                 return redirect()->back();
             }
         }
-
-
-        return redirect()->back();
     }
 
     public function search(Request $request)
@@ -176,22 +174,6 @@ class StudentController extends Controller
         return redirect()->route('students.index')->with(['flash_message' => 'Delete successfully!']);
     }
 
-    // public function updatePoint($id, Request $request)
-    // {
-    //     $student = $this->studentsRepo->find($id);
-    //     $subjects = $student->subjects;
-  
-    //     return view('backend.students.add-point', compact('student', 'subjects'));
-    // }
-
-    // public function savePoint(Request $request, $id)
-    // {
-    //     $subject = $this->subjectsRepo->find($id);
-    //     $subject->update($request->all());
-
-    //     return redirect()->route('updatePoint',$subject->id);
-    // }
-
     public function addPoint($id)
     {
         $getSubjects = $this->subjectsRepo->getAll();
@@ -217,5 +199,11 @@ class StudentController extends Controller
         $this->studentsRepo->find($id)->subjects()->sync($point);
 
         return redirect()->route('students.index');
+    }
+    
+    public function export($id)
+    {
+        return Excel::download(new StudentsExport($id), 'StudentsPoin.xlsx');
+        return Excel::store(new StudentsExport($id), 'StudentsPoin.xlsx', 'disk-name');
     }
 }
